@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import api from "@/lib/api";
+import api from "@/libz/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { API_BASE_URL } from "@/lib/constants";
+import { API_BASE_URL } from "@/libz/constants";
 import { useAuth } from "@/context/useAuth";
 
 interface SellerProfile {

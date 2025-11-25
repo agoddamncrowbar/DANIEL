@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import type { ChatMessage } from "./MessagesTab";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { API_BASE_URL } from "@/lib/constants";
-import api from "@/lib/api";
+import { API_BASE_URL } from "@/libz/constants";
+import api from "@/libz/api";
 
 interface Props {
   listingId: number;

@@ -3,9 +3,11 @@ import { AuthProvider } from "@/context/AuthProvider";
 import ProtectedRoute from "./wrappers/ProtectedRoute";
 
 import Home from "./pages/Home"
-import LoginForm from "./components/LoginForm";
-import SignupForm from "./components/SignupForm";
+import Signup from "./pages/Signup";
 import Listings from "./pages/Listings"
+import CreateListing from "./pages/Sell";
+import ListingDetail from "./pages/ListingDetail";
+import Login from "./pages/Login"
 
 import Account from "./pages/accounts/Account";
 function App() {
@@ -16,8 +18,10 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/listings" element={<Listings />} />
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/signup" element={<ProtectedRoute><SignupForm /></ProtectedRoute>} />
+            <Route path="/listings/:id" element = {<ListingDetail />}/>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/sell" element = {<CreateListing/>}/>
             <Route path="/account" element={<Account />} />
           </Routes>
         </BrowserRouter>

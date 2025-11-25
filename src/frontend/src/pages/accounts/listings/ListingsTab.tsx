@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import api from "@/lib/api";
+import api from "@/libz/api";
 import { Button } from "@/components/ui/button";
-import { API_BASE_URL } from "@/lib/constants";
+import { API_BASE_URL } from "@/libz/constants";
 import EditListingModal from "./EditingModal";
 
 interface Listing {

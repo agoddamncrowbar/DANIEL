@@ -10,6 +10,13 @@ class ChatMessageBase(BaseModel):
 
 class ChatMessageCreate(ChatMessageBase):
     pass
+class ChatMessageCreate(BaseModel):
+    receiver_id: int
+    message: str
+
+class TypingIndicator(BaseModel):
+    receiver_id: int
+    typing: bool
 
 
 class ChatMessageResponse(BaseModel):
@@ -19,6 +26,7 @@ class ChatMessageResponse(BaseModel):
     listing_id: int
     message: str
     created_at: datetime
-
+    
     class Config:
         orm_mode = True
+

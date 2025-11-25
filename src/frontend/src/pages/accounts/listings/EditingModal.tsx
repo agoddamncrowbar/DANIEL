@@ -9,8 +9,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { API_BASE_URL } from "@/lib/constants";
-import api from "@/lib/api";
+import { API_BASE_URL } from "@/libz/constants";
+import api from "@/libz/api";
 
 interface EditListingModalProps {
   open: boolean;

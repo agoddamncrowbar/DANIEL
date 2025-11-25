@@ -71,7 +71,7 @@ export default function Home() {
         <h2 className="text-3xl font-bold mb-4">Ready to Build Your Reach?</h2>
         <p className="mb-8 text-lg">Start sharing your construction supplies, equipment, and services today.</p>
         <Button size="lg" className="bg-black text-white hover:bg-gray-800">
-          Post Your First Listing
+         <a href="/sell"> Post Your First Listing</a>
         </Button>
       </section>
 

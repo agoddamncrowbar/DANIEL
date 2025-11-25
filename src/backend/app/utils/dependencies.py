@@ -1,5 +1,6 @@
 from fastapi import Depends, HTTPException, status
 from app.models.user import RoleEnum, User
+from typing import Optional
 
 # Existing imports...
 from fastapi.security import OAuth2PasswordBearer
@@ -35,3 +36,34 @@ def require_role(required_roles: list[RoleEnum]):
             )
         return current_user
     return role_checker
+
+
+
+
+oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="auth/login", auto_error=False)
+
+
+
+def get_current_user_optional(
+    token: Optional[str] = Depends(oauth2_scheme_optional),
+    db: Session = Depends(get_db)
+) -> Optional[User]:
+    """
+    Returns the logged-in user if a valid token is provided.
+    Returns None if:
+        - no token provided
+        - token invalid
+        - user not found
+    Does NOT raise HTTP exceptions.
+    """
+    if not token:
+        return None
+
+    try:
+        payload = decode_access_token(token)
+        if not payload:
+            return None
+        user = db.query(User).filter(User.id == int(payload["sub"])).first()
+        return user
+    except:
+        return None

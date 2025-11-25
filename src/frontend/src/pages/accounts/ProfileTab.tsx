@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import api from "@/lib/api";
-import { API_BASE_URL } from "@/lib/constants";
+import api from "@/libz/api";
+import { API_BASE_URL } from "@/libz/constants";
 import { useAuth } from "@/context/useAuth";
 
 export default function ProfileTab() {

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { API_BASE_URL } from "@/lib/constants";
+import { API_BASE_URL } from "@/libz/constants";
 import { Button } from "./ui/button";
 import { Avatar } from "./ui/avatar";
 import { useAuth } from "@/context/useAuth";
@@ -53,7 +53,7 @@ export default function Header() {
             <Button
               onClick={() => navigate("/sell")}
               variant="default"
-              className="bg-brand-green text-white hover:bg-green-600"
+              className="bg-yellow-400 text-green-500 hover:bg-yellow-600 hover:text-white font-bold"
             >
               Post an Ad
             </Button>
@@ -74,7 +74,7 @@ export default function Header() {
               <Button
                 onClick={handleLogout}
                 variant="outline"
-                className="border-brand-green text-brand-green hover:bg-brand-green hover:text-white text-sm"
+                className="border-brand-green text-brand-green hover:bg-red-400 hover:text-white text-sm"
               >
                 Logout
               </Button>
@@ -85,7 +85,7 @@ export default function Header() {
             <Button
               onClick={() => navigate("/login")}
               variant="outline"
-              className="border-brand-green text-brand-green hover:bg-brand-green hover:text-white"
+              className="border-brand-green text-brand-green hover:bg-brand-green hover:text-blue-500"
             >
               Login
             </Button>

@@ -31,6 +31,8 @@ export default function Account() {
 }
 
   return (
+    <>
+        <Header />
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar activeTab={activeTab} onChange={setActiveTab} />
 
@@ -41,5 +43,7 @@ export default function Account() {
         {activeTab === "listings" && <ListingsTab />}
       </main>
     </div>
+    <Footer />
+    </>
   );
 }

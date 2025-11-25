@@ -1,30 +1,47 @@
-import type { ChatMessage } from "./MessagesTab";
-
 interface Props {
-  messages: ChatMessage[];
+  chatData: any[]; // full grouped response
   activeListing: number | null;
-  onSelect: (id: number) => void;
+  activePartner: number | null;
+  onSelect: (listingId: number, partnerId: number | null) => void;
 }
 
-export default function ChatList({ messages, activeListing, onSelect }: Props) {
-  const listings = Array.from(new Set(messages.map(m => m.listing_id)));
-
+export default function ChatList({
+  chatData,
+  activeListing,
+  activePartner,
+  onSelect,
+}: Props) {
   return (
-    <div className="w-64 border-r bg-gray-50 overflow-y-auto">
+    <div className="w-72 border-r bg-gray-50 overflow-y-auto">
       <h2 className="font-semibold text-lg p-4 border-b">Conversations</h2>
-      {listings.length === 0 && (
-        <p className="p-4 text-gray-500 text-sm">No messages yet.</p>
+
+      {chatData.length === 0 && (
+        <p className="p-4 text-gray-500 text-sm">No conversations yet.</p>
       )}
-      {listings.map(id => (
-        <button
-          key={id}
-          className={`w-full text-left p-3 border-b hover:bg-gray-100 ${
-            activeListing === id ? "bg-gray-200 font-semibold" : ""
-          }`}
-          onClick={() => onSelect(id)}
-        >
-          Listing #{id}
-        </button>
+
+      {chatData.map((listing) => (
+        <div key={listing.listing_id}>
+          <button
+            className={`w-full text-left p-3 border-b bg-gray-200 font-semibold`}
+            onClick={() => onSelect(listing.listing_id, null)}
+          >
+            Listing #{listing.listing_id}: {listing.listing_title || ""}
+          </button>
+
+          {/* Buyers under listing */}
+          {activeListing === listing.listing_id &&
+            listing.chats.map((c: any) => (
+              <button
+                key={c.user_id}
+                className={`w-full pl-6 pr-3 py-2 text-left border-b hover:bg-gray-100 ${
+                  activePartner === c.user_id ? "bg-gray-300" : ""
+                }`}
+                onClick={() => onSelect(listing.listing_id, c.user_id)}
+              >
+                {c.user_name || `User #${c.user_id}`}
+              </button>
+            ))}
+        </div>
       ))}
     </div>
   );

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { API_BASE_URL } from "@/lib/constants";
+import { API_BASE_URL } from "@/libz/constants";
 import { useAuth } from "@/context/useAuth";
 
 interface SidebarProps {
