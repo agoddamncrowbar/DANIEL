@@ -8,7 +8,7 @@ import api from "@/libz/api";
 interface Props {
   listingId: number;
   currentUser: any;
-  chatPartnerId: number; // the user you are chatting with
+  chatPartnerId: number;
   initialMessages: ChatMessage[];
 }
 
@@ -23,17 +23,14 @@ export default function ChatWindow({
   const socketRef = useRef<WebSocket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom when messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Reset messages and socket when listingId or chatPartnerId changes
   useEffect(() => {
     const fetchChat = async () => {
       try {
         const res = await api.get(`/chat/${listingId}`);
-        // filter messages only with chatPartner
         const filtered = res.data.filter(
           (m: ChatMessage) =>
             m.sender_id === chatPartnerId || m.receiver_id === chatPartnerId
@@ -46,7 +43,6 @@ export default function ChatWindow({
 
     fetchChat();
 
-    // Close existing socket
     if (socketRef.current) socketRef.current.close();
 
     const token = localStorage.getItem("token");
@@ -56,7 +52,6 @@ export default function ChatWindow({
     ws.onopen = () => console.log(`✅ Connected to chat ${listingId}`);
     ws.onmessage = (e) => {
       const msg = JSON.parse(e.data);
-      // Only append messages relevant to this chat partner
       if (
         msg.sender_id === chatPartnerId ||
         msg.receiver_id === chatPartnerId
@@ -72,40 +67,54 @@ export default function ChatWindow({
 
   const handleSend = () => {
     if (!text.trim() || !socketRef.current) return;
+
     const payload = {
       receiver_id: chatPartnerId,
       message: text,
     };
+
     socketRef.current.send(JSON.stringify(payload));
     setText("");
   };
 
-  return (
-    <div className="flex-1 flex flex-col">
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            className={`p-2 rounded-md max-w-xs ${
-              m.sender_id === currentUser.id
-                ? "bg-blue-500 text-white self-end ml-auto"
-                : "bg-gray-200 text-gray-900 self-start"
-            }`}
-          >
-            {m.message}
-          </div>
-        ))}
+ return (
+    <div className="h-full flex flex-col bg-white rounded-none">
+      {/* MESSAGES */}
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 bg-[#fdfaf4]">
+        {messages.map((m) => {
+          const isMe = m.sender_id === currentUser.id;
+
+          return (
+            <div
+              key={m.id}
+              className={`px-4 py-2 max-w-[85%] sm:max-w-sm border shadow-sm rounded-none ${
+                isMe
+                  ? "bg-[#B8860B] text-white border-[#9A7209] ml-auto"
+                  : "bg-white text-gray-900 border-gray-300"
+              }`}
+            >
+              {m.message}
+            </div>
+          );
+        })}
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-3 border-t flex space-x-2">
+      {/* INPUT BAR */}
+      <div className="p-3 border-t border-[#9A7209] bg-white flex space-x-2">
         <Input
+          className="flex-1 rounded-none border-[#9A7209]"
           placeholder="Type a message..."
           value={text}
           onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
         />
-        <Button onClick={handleSend}>Send</Button>
+        <Button
+          onClick={handleSend}
+          className="bg-[#B8860B] text-white hover:bg-[#9A7209] rounded-none font-semibold px-5"
+        >
+          Send
+        </Button>
       </div>
     </div>
   );

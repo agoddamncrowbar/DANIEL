@@ -107,62 +107,82 @@ export default function EditListingModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl w-full p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle>Edit Listing</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">
+            Edit Listing
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 py-2">
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+          {/* Title */}
           <Input
             name="title"
             value={form.title}
             onChange={handleChange}
             placeholder="Title"
+            className="w-full"
           />
+
+          {/* Description */}
           <Textarea
             name="description"
             value={form.description}
             onChange={handleChange}
             placeholder="Description"
-          />
-          <Input
-            name="price"
-            type="number"
-            value={form.price}
-            onChange={handleChange}
-            placeholder="Price"
-          />
-          <Input
-            name="location"
-            value={form.location}
-            onChange={handleChange}
-            placeholder="Location"
-          />
-          <Input
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            placeholder="Category"
+            className="w-full min-h-[120px]"
           />
 
-          {/* Existing images */}
+          {/* Price, Location, Category */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <Input
+              name="price"
+              type="number"
+              value={form.price}
+              onChange={handleChange}
+              placeholder="Price"
+            />
+            <Input
+              name="location"
+              value={form.location}
+              onChange={handleChange}
+              placeholder="Location"
+            />
+            <Input
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              placeholder="Category"
+            />
+          </div>
+
+          {/* EXISTING IMAGES */}
           {existingImages.length > 0 && (
             <div>
-              <p className="text-sm text-gray-600 mb-2">Current Images</p>
-              <div className="flex flex-wrap gap-3">
+              <p className="text-sm text-gray-600 mb-2 font-medium">
+                Current Images
+              </p>
+
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                 {existingImages.map((img, i) => (
                   <div
                     key={i}
-                    className="relative w-24 h-24 rounded overflow-hidden border"
+                    className="relative w-full aspect-square border rounded-md overflow-hidden"
                   >
                     <img
                       src={`${API_BASE_URL}${img}`}
                       alt="Listing"
                       className="w-full h-full object-cover"
                     />
+
                     <button
                       onClick={() => removeExistingImage(i)}
-                      className="absolute top-1 right-1 bg-black/50 text-white text-xs rounded px-1"
+                      className="
+                        absolute top-1 right-1 
+                        bg-black/60 text-white 
+                        rounded-full p-1 
+                        text-xs hover:bg-black
+                      "
                     >
                       ✕
                     </button>
@@ -172,16 +192,20 @@ export default function EditListingModal({
             </div>
           )}
 
-          {/* Upload new images */}
+          {/* NEW IMAGES */}
           <div>
-            <p className="text-sm text-gray-600 mb-2">Upload New Images</p>
+            <p className="text-sm text-gray-600 mb-2 font-medium">
+              Upload New Images
+            </p>
+
             <Input type="file" multiple onChange={handleImageChange} />
+
             {newImages.length > 0 && (
-              <div className="flex gap-3 mt-2 flex-wrap">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-3">
                 {newImages.map((file, i) => (
                   <div
                     key={i}
-                    className="w-24 h-24 border rounded overflow-hidden"
+                    className="w-full aspect-square border rounded-md overflow-hidden"
                   >
                     <img
                       src={URL.createObjectURL(file)}
@@ -195,15 +219,25 @@ export default function EditListingModal({
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+        {/* FOOTER */}
+        <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="w-full sm:w-auto"
+          >
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={saving}>
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full sm:w-auto bg-[#B8860B] hover:bg-[#9A7209] text-white"
+          >
             {saving ? "Saving..." : "Save Changes"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
+
   );
 }

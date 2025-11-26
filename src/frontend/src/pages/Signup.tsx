@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "@/context/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +20,12 @@ export default function Signup() {
 
   const [error, setError] = useState("");
 
+  // Mount animation
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -31,14 +37,12 @@ export default function Signup() {
     try {
       const res = await axios.post(`${API_URL}/auth/register`, formData);
 
-      // If backend returns a token (if you add auto-login)
       if (res.data?.access_token) {
         await login(res.data.access_token);
         navigate("/");
         return;
       }
 
-      // Otherwise redirect to login
       navigate("/login");
     } catch (err: any) {
       setError(err.response?.data?.detail || "Signup failed");
@@ -48,28 +52,37 @@ export default function Signup() {
   return (
     <>
       <Header />
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
         <form
           onSubmit={handleSignup}
-          className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm"
+          className={`
+            bg-white p-8 w-full max-w-sm border border-gray-200
+            transition-all duration-200
+            ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}
+          `}
+          style={{ borderRadius: "0px" }}
         >
-          <h2 className="text-2xl font-semibold text-center mb-6">
+          <h2 className="text-3xl font-bold text-center mb-6 text-brand-black">
             Create Account
           </h2>
 
           {error && (
-            <div className="bg-red-100 text-red-700 p-2 rounded mb-4 text-sm">
+            <div className="bg-red-100 border border-red-300 text-red-700 p-2 text-sm mb-4">
               {error}
             </div>
           )}
 
-          {/* Name */}
+          {/* Full Name */}
           <div className="mb-4">
-            <label className="block mb-1 text-sm font-medium">Full Name</label>
+            <label className="block mb-1 text-sm font-medium text-brand-black">
+              Full Name
+            </label>
             <input
               type="text"
               name="name"
-              className="w-full p-2 border rounded focus:outline-blue-500"
+              className="w-full p-2 border border-gray-300 focus:border-brand-green focus:outline-none transition-all duration-200"
+              style={{ borderRadius: "0px" }}
               value={formData.name}
               onChange={handleChange}
               required
@@ -78,11 +91,14 @@ export default function Signup() {
 
           {/* Email */}
           <div className="mb-4">
-            <label className="block mb-1 text-sm font-medium">Email</label>
+            <label className="block mb-1 text-sm font-medium text-brand-black">
+              Email
+            </label>
             <input
               type="email"
               name="email"
-              className="w-full p-2 border rounded focus:outline-blue-500"
+              className="w-full p-2 border border-gray-300 focus:border-brand-green focus:outline-none transition-all duration-200"
+              style={{ borderRadius: "0px" }}
               value={formData.email}
               onChange={handleChange}
               required
@@ -91,13 +107,14 @@ export default function Signup() {
 
           {/* Phone */}
           <div className="mb-4">
-            <label className="block mb-1 text-sm font-medium">
+            <label className="block mb-1 text-sm font-medium text-brand-black">
               Phone Number
             </label>
             <input
               type="text"
               name="phone"
-              className="w-full p-2 border rounded focus:outline-blue-500"
+              className="w-full p-2 border border-gray-300 focus:border-brand-green focus:outline-none transition-all duration-200"
+              style={{ borderRadius: "0px" }}
               value={formData.phone}
               onChange={handleChange}
               placeholder="Optional"
@@ -106,11 +123,14 @@ export default function Signup() {
 
           {/* Password */}
           <div className="mb-6">
-            <label className="block mb-1 text-sm font-medium">Password</label>
+            <label className="block mb-1 text-sm font-medium text-brand-black">
+              Password
+            </label>
             <input
               type="password"
               name="password"
-              className="w-full p-2 border rounded focus:outline-blue-500"
+              className="w-full p-2 border border-gray-300 focus:border-brand-green focus:outline-none transition-all duration-200"
+              style={{ borderRadius: "0px" }}
               value={formData.password}
               onChange={handleChange}
               required
@@ -120,19 +140,21 @@ export default function Signup() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white p-2 rounded"
+            className="w-full bg-brand-green text-white bg-black py-2 font-semibold transition-all duration-200 hover:bg-[#B8860B]"
+            style={{ borderRadius: "0px" }}
           >
             Sign Up
           </button>
 
-          <p className="text-center text-sm mt-4">
+          <p className="text-center text-sm mt-4 text-gray-700">
             Already have an account?{" "}
-            <a href="/login" className="text-blue-600 hover:underline">
+            <a href="/login" className="text-brand-green hover:underline">
               Login
             </a>
           </p>
         </form>
       </div>
+
       <Footer />
     </>
   );

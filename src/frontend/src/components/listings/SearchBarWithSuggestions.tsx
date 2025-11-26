@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "@/libz/api";
 import { Link, useNavigate } from "react-router-dom";
+import { Search, X } from "lucide-react";
 
 interface SearchInsights {
   popular_searches: { term: string; count: number }[];
@@ -64,104 +65,147 @@ export default function SearchBarWithSuggestions() {
     setShowDropdown(false);
   };
 
+  const handleClear = () => {
+    setQuery("");
+    setQuickResults([]);
+  };
+
   return (
-    <div className="relative max-w-2xl mx-auto my-6">
-      <input
-        type="text"
-        placeholder="Search listings…"
-        value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setShowDropdown(true);
-        }}
-        onFocus={() => setShowDropdown(true)}
-        className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-blue-500"
-      />
+    <div className="relative max-w-3xl mx-auto my-6">
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+        <input
+          type="text"
+          placeholder="Search listings..."
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setShowDropdown(true);
+          }}
+          onFocus={() => setShowDropdown(true)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && query.trim()) {
+              goToSearchResults(query);
+            }
+          }}
+          className="w-full pl-12 pr-12 py-3 border-2 border-gray-300 bg-white text-gray-800 focus:outline-none focus:border-[#B8860B] transition-all duration-200"
+        />
+        {query && (
+          <button
+            onClick={handleClear}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+          >
+            <X size={20} />
+          </button>
+        )}
+      </div>
 
       {showDropdown && (
-        <div className="absolute w-full bg-white border shadow-lg rounded-lg mt-1 p-3 z-40 max-h-96 overflow-y-auto">
-          
-          {/* ---- 1. REAL RESULTS ---- */}
-          {quickResults.length > 0 && (
-            <div className="mb-3">
-              <h4 className="text-sm font-semibold text-gray-600 mb-1">
-                Search Results
-              </h4>
-              {quickResults.map((item) => (
-                <Link
-                  key={item.id}
-                  to={`/listings/${item.id}`}
-                  className="block py-1 px-2 hover:bg-gray-100 rounded"
-                >
-                  {item.title} – ${item.price}
-                </Link>
-              ))}
-
-              <button
-                className="block w-full text-left py-1 px-2 mt-1 text-blue-600 hover:bg-blue-50 rounded"
-                onClick={() => goToSearchResults(query)}
-              >
-                View all results →
-              </button>
-            </div>
-          )}
-
-          {/* ---- 2. Suggested Searches ---- */}
-          {insights?.suggested_searches?.length > 0 && (
-            <div className="mb-3">
-              <h4 className="text-sm font-semibold text-gray-600 mb-1">
-                Suggested Searches
-              </h4>
-              {insights.suggested_searches.map((term) => (
-                <button
-                  key={term}
-                  className="block w-full text-left py-1 px-2 hover:bg-gray-100 rounded"
-                  onClick={() => goToSearchResults(term)}
-                >
-                  {term}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* ---- 3. Popular Searches ---- */}
-          {insights?.popular_searches?.length > 0 && (
-            <div className="mb-3">
-              <h4 className="text-sm font-semibold text-gray-600 mb-1">
-                Popular Searches
-              </h4>
-              {insights.popular_searches.map((s) => (
-                <button
-                  key={s.term}
-                  className="block w-full text-left py-1 px-2 hover:bg-gray-100 rounded"
-                  onClick={() => goToSearchResults(s.term)}
-                >
-                  {s.term} ({s.count})
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* ---- 4. Popular Categories ---- */}
-          {insights?.popular_categories?.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold text-gray-600 mb-1">
-                Popular Categories
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {insights.popular_categories.map((cat) => (
+        <>
+          <div
+            className="fixed inset-0 z-30"
+            onClick={() => setShowDropdown(false)}
+          />
+          <div className="absolute w-full bg-white border-2 border-gray-200 shadow-lg mt-1 p-4 z-40 max-h-96 overflow-y-auto">
+            
+            {/* ---- 1. REAL RESULTS ---- */}
+            {quickResults.length > 0 && (
+              <div className="mb-4 pb-4 border-b border-gray-200">
+                <h4 className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
+                  Search Results
+                </h4>
+                {quickResults.map((item) => (
                   <Link
-                    key={cat}
-                    to={`/search-results?category=${encodeURIComponent(cat)}`}
-                    className="px-2 py-1 bg-blue-100 text-blue-700 text-sm rounded hover:bg-blue-200"
+                    key={item.id}
+                    to={`/listings/${item.id}`}
+                    className="block py-2 px-3 hover:bg-[#B8860B] hover:text-white transition-all duration-200 mb-1"
+                    onClick={() => setShowDropdown(false)}
                   >
-                    {cat}
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">{item.title}</span>
+                      <span className="font-bold">${item.price.toLocaleString()}</span>
+                    </div>
                   </Link>
                 ))}
+
+                <button
+                  className="block w-full text-left py-2 px-3 mt-2 text-[#B8860B] hover:bg-[#B8860B] hover:text-white font-semibold transition-all duration-200"
+                  onClick={() => goToSearchResults(query)}
+                >
+                  View all results →
+                </button>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+
+            {/* ---- 2. Suggested Searches ---- */}
+            {insights?.suggested_searches?.length > 0 && (
+              <div className="mb-4 pb-4 border-b border-gray-200">
+                <h4 className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
+                  Suggested Searches
+                </h4>
+                {insights.suggested_searches.map((term) => (
+                  <button
+                    key={term}
+                    className="block w-full text-left py-2 px-3 hover:bg-[#B8860B] hover:text-white transition-all duration-200 mb-1"
+                    onClick={() => goToSearchResults(term)}
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* ---- 3. Popular Searches ---- */}
+            {insights?.popular_searches?.length > 0 && (
+              <div className="mb-4 pb-4 border-b border-gray-200">
+                <h4 className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
+                  Popular Searches
+                </h4>
+                {insights.popular_searches.map((s) => (
+                  <button
+                    key={s.term}
+                    className="block w-full text-left py-2 px-3 hover:bg-[#B8860B] hover:text-white transition-all duration-200 mb-1"
+                    onClick={() => goToSearchResults(s.term)}
+                  >
+                    <div className="flex justify-between items-center">
+                      <span>{s.term}</span>
+                      <span className="text-sm opacity-75">({s.count})</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* ---- 4. Popular Categories ---- */}
+            {insights?.popular_categories?.length > 0 && (
+              <div>
+                <h4 className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">
+                  Popular Categories
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {insights.popular_categories.map((cat) => (
+                    <Link
+                      key={cat}
+                      to={`/search-results?category=${encodeURIComponent(cat)}`}
+                      className="px-3 py-1.5 bg-gray-100 text-gray-800 text-sm font-medium hover:bg-[#B8860B] hover:text-white transition-all duration-200"
+                      onClick={() => setShowDropdown(false)}
+                    >
+                      {cat}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Empty state */}
+            {query && quickResults.length === 0 && (
+              <div className="text-center py-6 text-gray-500">
+                <p>No results found for "{query}"</p>
+                <p className="text-sm mt-2">Try different keywords or browse categories below</p>
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

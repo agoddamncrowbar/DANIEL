@@ -1,5 +1,5 @@
 interface Props {
-  chatData: any[]; // full grouped response
+  chatData: any[];
   activeListing: number | null;
   activePartner: number | null;
   onSelect: (listingId: number, partnerId: number | null) => void;
@@ -12,33 +12,43 @@ export default function ChatList({
   onSelect,
 }: Props) {
   return (
-    <div className="w-72 border-r bg-gray-50 overflow-y-auto">
-      <h2 className="font-semibold text-lg p-4 border-b">Conversations</h2>
+    <div className="h-full overflow-y-auto bg-white border-r border-[#9A7209] rounded-none">
+      <h2 className="p-4 font-semibold text-lg uppercase bg-[#B8860B] text-white border-b border-[#9A7209]">
+        Conversations
+      </h2>
 
       {chatData.length === 0 && (
-        <p className="p-4 text-gray-500 text-sm">No conversations yet.</p>
+        <p className="p-4 text-gray-600 text-sm italic">No conversations yet.</p>
       )}
 
       {chatData.map((listing) => (
-        <div key={listing.listing_id}>
+        <div key={listing.listing_id} className="border-b border-[#9A7209]">
           <button
-            className={`w-full text-left p-3 border-b bg-gray-200 font-semibold`}
             onClick={() => onSelect(listing.listing_id, null)}
+            className={`block w-full px-4 py-3 text-left font-semibold uppercase tracking-wide transition-all duration-200 rounded-none 
+              ${
+                activeListing === listing.listing_id
+                  ? "bg-[#9A7209] text-white"
+                  : "bg-[#B8860B] text-white hover:bg-[#9A7209]"
+              }
+            `}
           >
-            Listing #{listing.listing_id}: {listing.listing_title || ""}
+            {listing.listing_title}
           </button>
 
-          {/* Buyers under listing */}
           {activeListing === listing.listing_id &&
             listing.chats.map((c: any) => (
               <button
                 key={c.user_id}
-                className={`w-full pl-6 pr-3 py-2 text-left border-b hover:bg-gray-100 ${
-                  activePartner === c.user_id ? "bg-gray-300" : ""
-                }`}
                 onClick={() => onSelect(listing.listing_id, c.user_id)}
+                className={`block w-full pl-6 pr-4 py-3 border-b border-[#9A7209] text-left transition-all duration-200 rounded-none
+                ${
+                  activePartner === c.user_id
+                    ? "bg-[#B8860B]/20 text-[#B8860B] font-semibold"
+                    : "hover:bg-[#B8860B]/10 text-gray-800"
+                }`}
               >
-                {c.user_name || `User #${c.user_id}`}
+                {c.user_name}
               </button>
             ))}
         </div>
@@ -46,3 +56,4 @@ export default function ChatList({
     </div>
   );
 }
+

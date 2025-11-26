@@ -56,47 +56,65 @@ export default function ListingsTab() {
   if (error) return <div className="text-red-500">{error}</div>;
   if (!listings.length) return <div>No listings yet. Create one!</div>;
 
-  return (
-    <div className="space-y-4">
-      {listings.map(listing => (
-        <div key={listing.id} className="bg-white p-4 rounded shadow flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            {listing.images.length > 0 && (
-              <img
-                src={`${API_BASE_URL}${listing.images[0].image_url}`}
-                alt={listing.title}
-                className="w-20 h-20 object-cover rounded"
-              />
-            )}
-            <div>
-              <h3 className="font-semibold text-lg">{listing.title}</h3>
-              <p className="text-gray-500 text-sm">{listing.category} | {listing.location}</p>
-              <p className="text-brand-green font-bold">${listing.price}</p>
-            </div>
-          </div>
-          <div className="space-x-2">
-            <Button
-              onClick={() => setEditingListing(listing)}
-              variant="outline"
-            >
-              Edit
-            </Button>
-            <Button
-              onClick={() => handleDelete(listing.id)}
-              variant="destructive"
-            >
-              Delete
-            </Button>
+return (
+  <div className="space-y-4">
+    {listings.map(listing => (
+      <div
+        key={listing.id}
+        className="
+          bg-white p-4 rounded shadow 
+          flex flex-col sm:flex-row 
+          sm:justify-between sm:items-center 
+          gap-4
+        "
+      >
+        {/* IMAGE + INFO */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          {listing.images.length > 0 && (
+            <img
+              src={`${API_BASE_URL}${listing.images[0].image_url}`}
+              alt={listing.title}
+              className="
+                w-full sm:w-20 h-40 sm:h-20 
+                object-cover rounded
+              "
+            />
+          )}
+
+          <div>
+            <h3 className="font-semibold text-lg">{listing.title}</h3>
+            <p className="text-gray-500 text-sm">{listing.category} | {listing.location}</p>
+            <p className="text-brand-green font-bold">${listing.price}</p>
           </div>
         </div>
-      ))}
 
-      <EditListingModal
-        open={!!editingListing}
-        onClose={() => setEditingListing(null)}
-        listing={editingListing}
-        onSave={handleSave}
-      />
-    </div>
-  );
+        {/* ACTION BUTTONS */}
+        <div className="flex sm:flex-row flex-col sm:space-x-2 space-y-2 sm:space-y-0 w-full sm:w-auto">
+          <Button
+            onClick={() => setEditingListing(listing)}
+            variant="outline"
+            className="w-full sm:w-auto"
+          >
+            Edit
+          </Button>
+          
+          <Button
+            onClick={() => handleDelete(listing.id)}
+            variant="destructive"
+            className="w-full sm:w-auto"
+          >
+            Delete
+          </Button>
+        </div>
+      </div>
+    ))}
+
+    <EditListingModal
+      open={!!editingListing}
+      onClose={() => setEditingListing(null)}
+      listing={editingListing}
+      onSave={handleSave}
+    />
+  </div>
+);
 }
